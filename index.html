@@ -1,216 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>¿Quieres ser mi novia?</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reproductor Spotify Embebido</title>
   <style>
+    /* Estilos básicos para centrar y darle un aspecto agradable */
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
-      overflow: hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg,#0f172a 0%, #071030 100%);
+      color: #fff;
     }
-
-    .container {
+    .card {
+      width: min(900px, 95%);
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+      backdrop-filter: blur(6px);
       text-align: center;
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      max-width: 500px;
-      z-index: 2;
-      position: relative;
     }
-
-    h1 {
-      color: #ff4b5c;
-      font-size: 2em;
-      margin-bottom: 30px;
-      animation: heartbeat 1.5s infinite;
+    h1 { margin: 0 0 12px; font-size: 1.25rem; }
+    p { margin: 0 0 18px; opacity: 0.9; font-size: 0.95rem; }
+    .embed-wrap {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.5);
     }
-
-    @keyframes heartbeat {
-      0% { transform: scale(1); }
-      25% { transform: scale(1.1); }
-      50% { transform: scale(1); }
-      75% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-
-    .buttons {
-      margin-top: 20px;
-    }
-
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: 0.3s;
-      margin: 10px;
-    }
-
-    #yesBtn {
-      background: #ff4b5c;
-      color: white;
-      box-shadow: 0 5px 15px rgba(255, 75, 92, 0.4);
-    }
-
-    #yesBtn:hover {
-      background: #e84118;
-    }
-
-    #noBtn {
-      background: #ccc;
-      color: black;
-    }
-
-    .message, .poema {
-      margin-top: 30px;
-      font-size: 20px;
-      color: #ff4b5c;
-      font-weight: bold;
-      display: none;
-      animation: fadeIn 2s forwards;
-      white-space: pre-line;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Corazones flotando */
-    .heart {
-      position: fixed;
-      color: #ff4b5c;
-      font-size: 24px;
-      animation: floatUp 4s linear forwards;
-      z-index: 1;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      50% { opacity: 0.8; }
-      100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+    /* Ajuste de altura para pantallas pequeñas */
+    @media (max-width: 420px) {
+      .card { padding: 12px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 id="question">¿Quieres ser mi novia? ❤️</h1>
-    <div class="buttons">
-      <button id="yesBtn">Sí</button>
-      <button id="noBtn">No</button>
+  <div class="card">
+    <h1>Reproductor Spotify</h1>
+    <p>Si el reproductor no carga, asegúrate de estar conectado a Internet y de que Spotify permite embeds desde tu región.</p>
+
+    <div class="embed-wrap">
+      <iframe
+        data-testid="embed-iframe"
+        style="border-radius:12px"
+        src="https://open.spotify.com/embed/track/5iAhtVeBVEmFNsIpD9oZqY?utm_source=generator&theme=0"
+        width="100%"
+        height="152"
+        frameborder="0"
+        allowfullscreen
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
     </div>
-    <div class="message" id="message">💖 ¡Sabía que aceptarías! Te quiero mucho, my love 💖</div>
-    <div class="poema" id="poema"></div>
   </div>
-
-  <!-- Música -->
-  <audio id="musica" src="music.mp3"></audio>
-
-  <script>
-    const yesBtn = document.getElementById('yesBtn');
-    const noBtn = document.getElementById('noBtn');
-    const message = document.getElementById('message');
-    const question = document.getElementById('question');
-    const poemaDiv = document.getElementById('poema');
-    const musica = document.getElementById('musica');
-
-    // Preguntas con "mi novia"
-    const preguntas = [
-      "¿Estás segura que no quieres ser mi novia? 🤔",
-      "¿De verdad no quieres ser mi novia? 😢",
-      "Piénsalo bien... ¿no quieres ser mi novia? 💭",
-      "Anda, di que sí... ¿quieres ser mi novia? 🥺",
-      "No me digas que no... ¿quieres ser mi novia? 💔",
-      "Última oportunidad... ¿quieres ser mi novia? 💕"
-    ];
-
-    let contador = 0;
-
-    // Acción al presionar "Sí"
-    yesBtn.addEventListener('click', () => {
-      question.style.display = "none";
-      yesBtn.style.display = "none";
-      noBtn.style.display = "none";
-      message.style.display = "block";
-
-      // Generar corazones flotantes infinitos
-      setInterval(() => {
-        crearCorazon();
-      }, 300);
-    });
-
-    // Acción al presionar "No"
-    noBtn.addEventListener('click', () => {
-      if (contador < preguntas.length) {
-        question.textContent = preguntas[contador];
-        contador++;
-      } else {
-        // Mostrar poema romántico
-        question.style.display = "none";
-        yesBtn.style.display = "none";
-        noBtn.style.display = "none";
-
-        poemaDiv.style.display = "block";
-        poemaDiv.textContent = 
-          "Bueno, está bien, vas a ser mi novia de todos modos 💕\n\n" +
-          "✨ Un poema para empezar a conquistarte ✨\n\n" +
-          "Tus ojos… tan lindos, tan brillantes,\n" +
-          "son como estrellas que me guían incluso en mis noches más oscuras.\n" +
-          "Cada vez que me miras, siento que el mundo se detiene,\n" +
-          "y solo existimos tú y yo, en un instante eterno.\n\n" +
-          "Tu sonrisa… esa que me enamora sin remedio,\n" +
-          "es la chispa que enciende mi alegría,\n" +
-          "la melodía más dulce que mi corazón sabe escuchar.\n" +
-          "Cuando sonríes, el universo parece más bello,\n" +
-          "y me haces creer que todo es posible.\n\n" +
-          "Tu bella cara es un retrato de la perfección,\n" +
-          "no hay pincel ni artista que pueda igualar lo que eres,\n" +
-          "porque tu belleza no solo está en lo que se ve,\n" +
-          "sino en lo que transmites, en lo que haces sentir.\n\n" +
-          "Y tu dulzura…\n" +
-          "esa forma tan tierna de ser,\n" +
-          "es el regalo más grande que la vida me ha dado.\n" +
-          "En tu bondad encuentro paz,\n" +
-          "en tu ternura, la certeza de que quiero quedarme contigo siempre.\n\n" +
-          "Eres mi inspiración,\n" +
-          "mi razón de soñar despierto,\n" +
-          "la esperanza que me acompaña en cada paso.\n" +
-          "Si me dejas, quiero ser quien cuide de tu sonrisa,\n" +
-          "quien se pierda en tus ojos,\n" +
-          "quien te recuerde cada día lo increíble que eres,\n" +
-          "y quien te ame sin medida… hoy, mañana y siempre. ❤️";
-
-        // Reproducir música
-        musica.play().catch(() => {
-          console.log("El navegador bloqueó el autoplay. Se reproducirá al tocar la pantalla.");
-        });
-      }
-    });
-
-    // Función para crear corazones
-    function crearCorazon() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.textContent = "❤️";
-      document.body.appendChild(heart);
-
-      heart.style.left = Math.random() * window.innerWidth + "px";
-      heart.style.bottom = "0px";
-      heart.style.fontSize = (20 + Math.random() * 30) + "px";
-
-      setTimeout(() => {
-        heart.remove();
-      }, 4000);
-    }
-  </script>
 </body>
 </html>
